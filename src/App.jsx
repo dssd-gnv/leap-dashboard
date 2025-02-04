@@ -77,38 +77,38 @@ function App() {
               <Route path="/" element={
                 <div className="grid">
                   <div className="card stat-card">
-                    <h2>kWh Saved</h2>
+                    <h2 className="stat-heading">kWh Saved</h2>
                     <span className="stat">600K</span>
                   </div>
                   <div className="card stat-card">
-                    <h2>Annual Fuel Dollars Saved</h2>
+                    <h2 className="stat-heading">Annual Fuel Dollars Saved</h2>
                     <span className="stat">$44K</span>
                   </div>
                   <div className="card stat-card">
-                    <h2>Annual Electric Dollars Saved</h2>
+                    <h2 className="stat-heading">Annual Electric Dollars Saved</h2>
                     <span className="stat">$62K</span>
                   </div>
                   <div className="card stat-card">
-                    <h2>CO2 Tons Diverted</h2>
+                    <h2 className="stat-heading">CO2 Tons Diverted</h2>
                     <span className="stat">2,000</span>
                   </div>
                   <div className="map-container">
-                    <h2>Where We Serve in Virginia</h2>
+                    <h2 className="stat-heading">Where We Serve in Virginia</h2>
                     <Map
                       height={500}
                       data={{ topography, countyCounts }}
                     />
                   </div>
                   <div className="gauge-container">
-                    <h2>HVAC Efficiency</h2>
+                    <h2 className="stat-heading">HVAC Efficiency</h2>
                     <Gauge value={94.7} label={"Improvement in"} units={"HVAC Duct Efficiency"} />
                   </div>
                   <div className="card-2 stat-card">
-                    <h2>Annual Fuel Therms Saved</h2>
+                    <h2 className="stat-heading">Annual Fuel Therms Saved</h2>
                     <span className="stat">26K</span>
                   </div>
                   <div className="card-2 stat-card">
-                    <h2>Total Savings</h2>
+                    <h2 className="stat-heading">Total Savings</h2>
                     <span className="stat">$127K</span>
                   </div>
                 </div>
