@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import * as d3 from "d3";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import Map from "./components/Map";
-import Gauge from "./components/Gauge";
+import Dashboard from "./components/Dashboard";
 import About from "./components/About";
+import _ from "lodash";
 
 function App() {
   const [topography, setTopography] = useState(null);
   const [loading, setLoading] = useState(true);
   const [countyCounts, setCountyCounts] = useState({});
+  const [dashboardStats, setDashboardStats] = useState({});
 
   useEffect(() => {
     const getData = async () => {
@@ -28,6 +29,39 @@ function App() {
           }, {});
           setCountyCounts(counts);
         }),
+        d3.csv('/data/project_savings.csv').then((csvData) => {
+          let numerical_columns = [
+            'kWh Saved',
+            'CO2 Tons Diverted',
+            'Annual Fuel Therms Saved'
+          ]
+          let currency_columns = [
+            'Annual Fuel Dollars Saved',
+            'Annual Electric Dollars Saved',
+            'Total Savings'
+          ]
+          let gauge_column = 'HVAC Duct Efficiency Improved';
+          let sum_columns = numerical_columns.concat(currency_columns);
+          let newData = {};
+          _.forEach(csvData, (row) => {
+            let picked = _.pick(row, sum_columns.concat(gauge_column));
+            _.forEach(picked, (value, key) => {
+              if (_.includes(_.keys(newData), key)) {
+                newData[key].push(value);
+              } else {
+                newData[key] = [value];
+              }
+            });
+          });
+          _.forEach(numerical_columns, (column) => {
+            newData[column] = Math.round(_.sum(_.map(newData[column], parseFloat)) / 1000) + 'K'
+          });
+          _.forEach(currency_columns, (column) => {
+          newData[column] = '$' + Math.round(_.sum(_.map(newData[column], parseFloat)) / 1000) + 'K'
+          });
+          newData[gauge_column] = parseFloat(_.mean(_.map(newData[gauge_column], parseFloat)).toFixed(1));
+          setDashboardStats(newData);
+        })
       ]);
 
       if (topography) {
@@ -74,45 +108,7 @@ function App() {
           <main className="main">
             <Routes>
               <Route path="/About" element={<About />} />
-              <Route path="/" element={
-                <div className="grid">
-                  <div className="card stat-card">
-                    <h2 className="stat-heading">kWh Saved</h2>
-                    <span className="stat">600K</span>
-                  </div>
-                  <div className="card stat-card">
-                    <h2 className="stat-heading">Annual Fuel Dollars Saved</h2>
-                    <span className="stat">$44K</span>
-                  </div>
-                  <div className="card stat-card">
-                    <h2 className="stat-heading">Annual Electric Dollars Saved</h2>
-                    <span className="stat">$62K</span>
-                  </div>
-                  <div className="card stat-card">
-                    <h2 className="stat-heading">CO2 Tons Diverted</h2>
-                    <span className="stat">2,000</span>
-                  </div>
-                  <div className="map-container">
-                    <h2 className="stat-heading">Where We Serve in Virginia</h2>
-                    <Map
-                      height={500}
-                      data={{ topography, countyCounts }}
-                    />
-                  </div>
-                  <div className="gauge-container">
-                    <h2 className="stat-heading">HVAC Efficiency</h2>
-                    <Gauge value={94.7} label={"Improvement in"} units={"HVAC Duct Efficiency"} />
-                  </div>
-                  <div className="card-2 stat-card">
-                    <h2 className="stat-heading">Annual Fuel Therms Saved</h2>
-                    <span className="stat">26K</span>
-                  </div>
-                  <div className="card-2 stat-card">
-                    <h2 className="stat-heading">Total Savings</h2>
-                    <span className="stat">$127K</span>
-                  </div>
-                </div>
-              }/>
+              <Route path="/" element={<Dashboard dashboardStats={dashboardStats} topography={topography} countyCounts={countyCounts} />} />
             </Routes>
           </main>
         </div>
