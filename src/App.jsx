@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import * as d3 from "d3";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import Dashboard from "./components/Dashboard";
 import About from "./components/About";
+import Dashboard from "./components/Dashboard";
+import Toggle from "react-toggle";
+import "react-toggle/style.css"
 import _ from "lodash";
 
 function App() {
@@ -10,6 +12,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [countyCounts, setCountyCounts] = useState({});
   const [dashboardStats, setDashboardStats] = useState({});
+  const [showHouseholdAverages, setshowHouseholdAverages] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
@@ -101,6 +104,14 @@ function App() {
               </Link>
             </div>
             <div className="button-container">
+              <span style={{padding: "1em 1em 0em 0em"}}>State Totals</span>
+              <div style={{paddingTop: "1em"}}>
+                <Toggle
+                  defaultChecked={showHouseholdAverages}
+                  onChange={() => setshowHouseholdAverages(!showHouseholdAverages)} 
+                  />
+              </div>
+              <span style={{padding: "0.5em 1em 0em 1em"}}>Household Averages</span>
               <a target="_blank" rel="noreferrer" href="https://www.leap-va.org/" className="button">About LEAP</a>
               <Link to="/About" className="button">About this Dashboard</Link>
             </div>
