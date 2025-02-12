@@ -24,7 +24,7 @@ function createGaugeCard(key, value) {
     )
 }
 
-export default function Dashboard({ dashboardStats, topography, countyCounts }) {
+export default function Dashboard({ showHouseholdAverages, dashboardStats, topography, countyCounts }) {
     let columns1 = ['kWh Saved', 'Annual Fuel Dollars Saved', 'Annual Electric Dollars Saved', 'CO2 Tons Diverted'];
     let columns2 = ['HVAC Duct Efficiency Improved']
     let columns3 = ['Annual Fuel Therms Saved', 'Total Savings']

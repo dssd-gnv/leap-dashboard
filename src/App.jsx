@@ -117,7 +117,7 @@ function App() {
           <main className="main">
             <Routes>
               <Route path="/About" element={<About />} />
-              <Route path="/" element={<Dashboard dashboardStats={dashboardStats} topography={topography} countyCounts={countyCounts} />} />
+              <Route path="/" element={<Dashboard showHouseholdAverages={showHouseholdAverages} dashboardStats={dashboardStats} topography={topography} countyCounts={countyCounts} />} />
             </Routes>
           </main>
         </div>
