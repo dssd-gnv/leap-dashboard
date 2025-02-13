@@ -1,48 +1,71 @@
 import Map from "./Map";
 import Gauge from "./Gauge";
 import { Fragment } from "react";
+import _ from "lodash";
 
-function createStatCard(key, value, divClassName) {
+function createStatCard(showHouseHoldAverages, currencyColumns, column, values) {
+    let aggregatedValue;
+    // Total Savings is calculated by summing up all households regardless of toggle state
+    if (column == "Total Savings" || !showHouseHoldAverages) {
+        aggregatedValue = Math.round(_.sum(_.map(values, parseFloat)) / 1000) + 'K';
+    } else {
+        aggregatedValue = Math.round(_.mean(_.map(values, parseFloat)));
+    }
+    if (_.includes(currencyColumns, column)) {
+        aggregatedValue = '$' + aggregatedValue;
+    }
     return (
-        <Fragment key={key}>
-            <div className={divClassName}>
-                <h2 className="stat-heading">{key}</h2>
-                <span className="stat">{value}</span>
+        <Fragment key={column}>
+            <div className="card stat-card">
+                <h2 className="stat-heading">{column}</h2>
+                <span className="stat">{aggregatedValue}</span>
             </div>
         </Fragment>
     );
+
 }
 
-function createGaugeCard(key, value) {
+function createGaugeCard(column, values) {
+    let aggregatedValue = parseFloat(_.mean(_.map(values, parseFloat)).toFixed(1));
     return (
-        <Fragment key={key}>
+        <Fragment key={column}>
             <div className="gauge-container">
-                <h2 className="stat-heading">HVAC Efficiency</h2>
-                <Gauge value={value} label={"Improvement in"} units={"HVAC Duct Efficiency"} />
+                <h2 className="stat-heading">{column}</h2>
+                <Gauge value={aggregatedValue} />
             </div>
         </Fragment>
     )
 }
 
 export default function Dashboard({ showHouseholdAverages, dashboardStats, topography, countyCounts }) {
-    let columns1 = ['kWh Saved', 'Annual Fuel Dollars Saved', 'Annual Electric Dollars Saved', 'CO2 Tons Diverted'];
-    let columns2 = ['HVAC Duct Efficiency Improved']
-    let columns3 = ['Annual Fuel Therms Saved', 'Total Savings']
+    const numericalColumns = [
+        'kWh Saved',
+        'CO2 Tons Diverted',
+        'Annual Fuel Therms Saved'
+    ];
+    const currencyColumns = [
+        'Annual Fuel Dollars Saved',
+        'Annual Electric Dollars Saved',
+        'Total Savings'
+    ];
+    let firstRowColumns = _.concat(numericalColumns, [currencyColumns[0]])
+    const gaugeColumn = 'HVAC Duct Efficiency Improved';
+    let thirdRowColumns = _.range(1, currencyColumns.length).map((idx) => currencyColumns[idx]);
     return (
-        <div className="grid">
+        <div className="grid grid-cols-4 gap-4">
             {
                 Object.entries(dashboardStats)
                     .filter((entry) => {
-                        let key = entry[0];
-                        return columns1.includes(key);
+                        let column = entry[0];
+                        return _.includes(firstRowColumns, column);
                     })
                     .map((entry) => {
-                        let key = entry[0];
-                        let value = entry[1];
-                        return createStatCard(key, value, "card stat-card");
+                        let column = entry[0];
+                        let values = entry[1];
+                        return createStatCard(showHouseholdAverages, currencyColumns, column, values);
                     })
             }
-            <div className="map-container">
+            <div className="map-container col-span-3 row-span-3">
                 <h2 className="stat-heading">Where We Serve in Virginia</h2>
                 <Map
                     height={500}
@@ -52,27 +75,18 @@ export default function Dashboard({ showHouseholdAverages, dashboardStats, topog
             {
                 Object.entries(dashboardStats)
                     .filter((entry) => {
-                        let key = entry[0];
-                        return columns2.includes(key);
+                        let column = entry[0];
+                        return _.includes(thirdRowColumns, column);
                     })
                     .map((entry) => {
-                        let key = entry[0];
-                        let value = entry[1];
-                        return createGaugeCard(key, value);
+                        let column = entry[0];
+                        let values = entry[1];
+                        return createStatCard(showHouseholdAverages, currencyColumns, column, values);
                     })
             }
             {
-                Object.entries(dashboardStats)
-                    .filter((entry) => {
-                        let key = entry[0];
-                        return columns3.includes(key);
-                    })
-                    .map((entry) => {
-                        let key = entry[0];
-                        let value = entry[1];
-                        return createStatCard(key, value, "card-2 stat-card");
-                    })
+                createGaugeCard(gaugeColumn, dashboardStats[gaugeColumn])
             }
-        </div>
+        </div >
     );
 }

@@ -56,13 +56,6 @@ function App() {
               }
             });
           });
-          _.forEach(numerical_columns, (column) => {
-            newData[column] = Math.round(_.sum(_.map(newData[column], parseFloat)) / 1000) + 'K'
-          });
-          _.forEach(currency_columns, (column) => {
-          newData[column] = '$' + Math.round(_.sum(_.map(newData[column], parseFloat)) / 1000) + 'K'
-          });
-          newData[gauge_column] = parseFloat(_.mean(_.map(newData[gauge_column], parseFloat)).toFixed(1));
           setDashboardStats(newData);
         })
       ]);
