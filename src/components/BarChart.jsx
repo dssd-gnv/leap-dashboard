@@ -57,7 +57,7 @@ const BarChart = ({ height, data }) => {
       style={{
         height,
       }}
-      className="container"
+      className="relative overflow-hidden"
     >
       <svg
         width={width}
@@ -77,7 +77,7 @@ const BarChart = ({ height, data }) => {
             />
           ))}
         </g>
-        <g className="labels">
+        <g className="hidden md:block">
           {data.map((d) => (
             <text
               key={d.country}

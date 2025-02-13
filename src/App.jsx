@@ -47,11 +47,9 @@ function App() {
   if (loading) {
     return (
       <div className="dashboard">
-        <div className="wrapper">
-          <header className="logo-header">
-            <img src="/images/logo_main.png" alt="Logo" className="logo" />
-          </header>
-        </div>
+        <header className="flex justify-between m-auto p-[1.5vh]">
+          <img src="/images/logo_main.png" alt="Logo" className="flex w-auto h-[7vh] align-middle" />
+        </header>
       </div>
     )
   }
@@ -59,63 +57,65 @@ function App() {
   return (
     <Router>
       <div className="dashboard">
-        <div className="wrapper">
-          <header>
-            <div className="logo-header">
-              <Link to="/">
-                <img src="/images/logo_main.png" alt="Logo" className="logo" />
-              </Link>
-            </div>
-            <div className="button-container">
-              <a target="_blank" rel="noreferrer" href="https://www.leap-va.org/" className="button">About LEAP</a>
-              <Link to="/About" className="button">About this Dashboard</Link>
-            </div>
-          </header>
-          <main className="main">
-            <Routes>
-              <Route path="/About" element={<About />} />
-              <Route path="/" element={
-                <div className="grid">
-                  <div className="card stat-card">
-                    <h2 className="stat-heading">kWh Saved</h2>
-                    <span className="stat">600K</span>
-                  </div>
-                  <div className="card stat-card">
-                    <h2 className="stat-heading">Annual Fuel Dollars Saved</h2>
-                    <span className="stat">$44K</span>
-                  </div>
-                  <div className="card stat-card">
-                    <h2 className="stat-heading">Annual Electric Dollars Saved</h2>
-                    <span className="stat">$62K</span>
-                  </div>
-                  <div className="card stat-card">
-                    <h2 className="stat-heading">CO2 Tons Diverted</h2>
-                    <span className="stat">2,000</span>
-                  </div>
-                  <div className="map-container">
-                    <h2 className="stat-heading">Where We Serve in Virginia</h2>
-                    <Map
-                      height={500}
-                      data={{ topography, countyCounts }}
-                    />
-                  </div>
-                  <div className="gauge-container">
-                    <h2 className="stat-heading">HVAC Efficiency</h2>
-                    <Gauge value={94.7} label={"Improvement in"} units={"HVAC Duct Efficiency"} />
-                  </div>
-                  <div className="card-2 stat-card">
-                    <h2 className="stat-heading">Annual Fuel Therms Saved</h2>
-                    <span className="stat">26K</span>
-                  </div>
-                  <div className="card-2 stat-card">
-                    <h2 className="stat-heading">Total Savings</h2>
-                    <span className="stat">$127K</span>
-                  </div>
+        <header className="flex justify-between m-auto p-[1.5vh]">
+          <div>
+            <Link to="/">
+              <img src="/images/logo_main.png" alt="Logo" className="flex w-auto h-[7vh] align-middle" />
+            </Link>
+          </div>
+          <div className="flex justify-end items-center gap-[1vw]">
+            <button className="flex items-center py-[10px] px-[20px] text-[1.1rem] font-medium text-white bg-[#386fa4] rounded-[0.75rem] no-underline transition-colors duration-300 hover:bg-blue-900">
+              <Link to="https://www.leap-va.org/">About LEAP</Link>
+            </button>
+            <button className="flex items-center py-[10px] px-[20px] text-[1.1rem] font-medium text-white bg-[#386fa4] rounded-[0.75rem] no-underline transition-colors duration-300 hover:bg-blue-900">
+            <Link to="/About" className="button">About this Dashboard</Link>
+            </button>
+          </div>
+        </header>
+        <main className="main">
+          <Routes>
+            <Route path="/About" element={<About />} />
+            <Route path="/" element={
+              <div className="grid grid-cols-4 gap-4">
+                <div className="card stat-card">
+                  <h2 className="stat-heading">kWh Saved</h2>
+                  <span className="stat">600K</span>
                 </div>
-              }/>
-            </Routes>
-          </main>
-        </div>
+                <div className="card stat-card">
+                  <h2 className="stat-heading">Annual Fuel Dollars Saved</h2>
+                  <span className="stat">$44K</span>
+                </div>
+                <div className="card stat-card">
+                  <h2 className="stat-heading">Annual Electric Dollars Saved</h2>
+                  <span className="stat">$62K</span>
+                </div>
+                <div className="card stat-card">
+                  <h2 className="stat-heading">CO2 Tons Diverted</h2>
+                  <span className="stat">2,000</span>
+                </div>
+                <div className="map-container col-span-3 row-span-3">
+                  <h2 className="stat-heading">Where We Serve in Virginia</h2>
+                  <Map
+                    height={500}
+                    data={{ topography, countyCounts }}
+                  />
+                </div>
+                <div className="gauge-container">
+                  <h2 className="stat-heading">HVAC Efficiency</h2>
+                  <Gauge value={94.7} />
+                </div>
+                <div className="card-2 stat-card">
+                  <h2 className="stat-heading">Annual Fuel Therms Saved</h2>
+                  <span className="stat">26K</span>
+                </div>
+                <div className="card-2 stat-card">
+                  <h2 className="stat-heading">Total Savings</h2>
+                  <span className="stat">$127K</span>
+                </div>
+              </div>
+            } />
+          </Routes>
+        </main>
       </div>
     </Router>
   );
