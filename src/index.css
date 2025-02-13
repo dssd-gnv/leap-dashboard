@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 * {
   margin: 0;
   padding: 0;
@@ -110,20 +112,12 @@ h2 {
   margin: 0 auto;
 }
 
-.grid {
-  display: grid;
-  gap: 1.5vh;
-}
-
 .map-container,
 .pie-chart-container,
 .bar-chart-container,
 .gauge-container,
 .card,
 .card-2 {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
   padding: 1rem;
   border-radius: 0.75rem;
   --tw-shadow: 0px 0px 0px 1px rgba(9, 9, 11, 0.07),
@@ -157,51 +151,6 @@ h2 {
 }
 
 /* Responsive */
-
-@media (min-width: 1280px) {
-  .grid {
-    grid-template-columns: repeat(20, minmax(0, 1fr));
-    grid-template-rows: 15vh 30vh 15vh 15vh;
-  }
-}
-
-@media (min-width: 1024px) {
-  .wrapper {
-    max-width: 80rem;
-  }
-
-  .container {
-    overflow: visible;
-  }
-
-  .card {
-    grid-column: span 5 / span 5;
-    grid-row: 1;
-  }
-
-  .map-container {
-    grid-column: span 15 / span 15;
-    grid-row: 2 / span 3;
-  }
-
-  .gauge-container {
-    grid-column: 16 / span 5;
-    grid-row: span 1;
-  }
-
-  .card-2 {
-    grid-column: 16 / span 5;
-    grid-row: span 1;
-  }
-
-  .pie-chart-container {
-    grid-column: span 5 / span 5;
-  }
-
-  .bar-chart-container {
-    grid-column: span 15 / span 15;
-  }
-}
 
 @media (min-width: 768px) {
   .labels text {
