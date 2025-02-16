@@ -1,5 +1,7 @@
 import * as d3 from "d3";
 
+const apiKey = import.meta.env.VITE_MONDAY_API_KEY;
+
 const fetchDataLocally = async () => {
     const geoJsonData = await d3.json('/data/va_county.geojson');
     const intakeData = await d3.csv('/data/intake.csv');
@@ -28,7 +30,32 @@ const fetchProjectSavingsDataFromApi = async () => {
         "    }\n" +
         "  }\n" +
         "}";
-    let apiKey = import.meta.env.VITE_MONDAY_API_KEY;
+    const response = await fetch("https://api.monday.com/v2", {
+        method: 'POST',
+        cache: 'no-cache',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${apiKey}`,
+        },
+        body: JSON.stringify({
+            'query': query
+        })
+    });
+    return response.json();
+}
+
+const fetchIntakeDataFromApi = async () => {
+    let query = "{\n" +
+        "  boards(ids: [5893018197]) {\n" +
+        "    items_page {\n" +
+        "      items {\n" +
+        "        column_values(ids: [\"city__county\"]) {\n" +
+        "          text\n" +
+        "        }\n" +
+        "      }\n" +
+        "    }\n" +
+        "  }\n" +
+        "}";
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         cache: 'no-cache',
@@ -45,5 +72,6 @@ const fetchProjectSavingsDataFromApi = async () => {
 
 export {
     fetchDataLocally,
-    fetchProjectSavingsDataFromApi
+    fetchProjectSavingsDataFromApi,
+    fetchIntakeDataFromApi
 };
