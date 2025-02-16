@@ -11,6 +11,24 @@ const fetchDataLocally = async () => {
     };
 };
 
+const fetchProjectSavingsDataFromApi = async () => {
+    let query = "query { boards(ids: [6589717059]){ items_page(limit: 500) { items { column_values(ids: [\"numbers3__1\", \"numbers4__1\", \"numbers_2__1\", \"numbers_3__1\", \"numbers_4__1\", \"numbers_5__1\", \"numbers05__1\"]) {column { title } text }}}}}";
+    let apiKey = import.meta.env.VITE_MONDAY_API_KEY;
+    const response = await fetch("https://api.monday.com/v2", {
+        method: 'POST',
+        cache: 'no-cache',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${apiKey}`,
+        },
+        body: JSON.stringify({
+            'query': query
+        })
+    });
+    return response.json();
+}
+
 export {
-    fetchDataLocally
+    fetchDataLocally,
+    fetchProjectSavingsDataFromApi
 };

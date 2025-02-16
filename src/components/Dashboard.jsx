@@ -7,9 +7,9 @@ function createStatCard(showHouseHoldAverages, currencyColumns, column, values) 
     let aggregatedValue;
     // Total Savings is calculated by summing up all households regardless of toggle state
     if (column === "Total Savings" || !showHouseHoldAverages) {
-        aggregatedValue = Math.round(_.sum(_.map(values, parseFloat)) / 1000) + 'K';
+        aggregatedValue = _.round(_.sum(values) / 1000) + 'K';
     } else {
-        aggregatedValue = Math.round(_.mean(_.map(values, parseFloat)));
+        aggregatedValue = _.round(_.mean(values));
     }
     if (_.includes(currencyColumns, column)) {
         aggregatedValue = '$' + aggregatedValue;
@@ -26,12 +26,12 @@ function createStatCard(showHouseHoldAverages, currencyColumns, column, values) 
 }
 
 function createGaugeCard(column, values) {
-    let aggregatedValue = parseFloat(_.mean(_.map(values, parseFloat)).toFixed(1));
+    let aggregatedValue = _.mean(values);
     return (
         <Fragment key={column}>
             <div className="gauge-container">
                 <h2 className="stat-heading">{column}</h2>
-                <Gauge value={aggregatedValue}/>
+                <Gauge value={parseFloat(aggregatedValue.toFixed(2))}/>
             </div>
         </Fragment>
     )
@@ -40,16 +40,16 @@ function createGaugeCard(column, values) {
 export default function Dashboard({ showHouseholdAverages, dashboardStats, topography, countyCounts }) {
     const numericalColumns = [
         'kWh Saved',
-        'CO2 Tons Diverted',
+        'CO 2 Tons',
         'Annual Fuel Therms Saved'
     ];
     const currencyColumns = [
-        'Annual Fuel Dollars Saved',
-        'Annual Electric Dollars Saved',
+        'Annual Fuel Dollars',
+        'Annual Electric Dollars',
         'Total Savings'
     ];
     let firstRowColumns = _.concat(numericalColumns, [currencyColumns[0]])
-    const gaugeColumn = 'HVAC Duct Efficiency Improved';
+    const gaugeColumn = 'HVAC Duct Efficiency';
     let thirdRowColumns = _.range(1, currencyColumns.length).map((idx) => currencyColumns[idx]);
     return (
         <div className="grid grid-cols-4 gap-4">

@@ -5,7 +5,7 @@ import Dashboard from "./components/Dashboard";
 import Toggle from "react-toggle";
 import "react-toggle/style.css"
 import _ from "lodash";
-import {fetchDataLocally} from "../util/data.js";
+import {fetchProjectSavingsDataFromApi, fetchDataLocally} from "../util/data.js";
 
 function App() {
     const [topography, setTopography] = useState(null);
@@ -32,22 +32,15 @@ function App() {
     }, [topography, countyCounts, setCountyCounts, setTopography]);
 
     const updateDashboardStats = useCallback((projectSavingsData) => {
-        let numerical_columns = [
-            'kWh Saved',
-            'CO2 Tons Diverted',
-            'Annual Fuel Therms Saved'
-        ]
-        let currency_columns = [
-            'Annual Fuel Dollars Saved',
-            'Annual Electric Dollars Saved',
-            'Total Savings'
-        ]
-        let gauge_column = 'HVAC Duct Efficiency Improved';
-        let sum_columns = numerical_columns.concat(currency_columns);
         let newData = {};
-        _.forEach(projectSavingsData, (row) => {
-            let picked = _.pick(row, sum_columns.concat(gauge_column));
-            _.forEach(picked, (value, key) => {
+        _.forEach(projectSavingsData, (item) => {
+            const column_values = item.column_values;
+            _.forEach(column_values, (column_value) => {
+                const key = column_value.column.title;
+                let value = parseFloat(column_value.text);
+                if (_.isNaN(value)) {
+                    value = 0;
+                }
                 if (_.includes(_.keys(newData), key)) {
                     newData[key].push(value);
                 } else {
@@ -64,10 +57,18 @@ function App() {
             .then((data) => {
                 setTopography(data['geoJsonData']);
                 updateCountyCounts(data['intakeData']);
-                updateDashboardStats(data['projectSavingsData']);
             }).catch(console.error);
         setLoading(false);
     }, [setLoading, setTopography, updateCountyCounts, updateDashboardStats]);
+
+    useEffect(() => {
+        setLoading(true);
+        fetchProjectSavingsDataFromApi().then((response) => {
+            const data = response.data.boards[0].items_page.items;
+            updateDashboardStats(data);
+        }).catch(console.error);
+        setLoading(false);
+    }, [setLoading]);
 
     if (loading) {
         return (
