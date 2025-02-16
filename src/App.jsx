@@ -15,11 +15,8 @@ function App() {
     const [showHouseholdAverages, setshowHouseholdAverages] = useState(false);
 
     const updateCountyCounts = useCallback((intakeData) => {
-        const counts = intakeData.reduce((acc, row) => {
-            const county = row['City/ County'].trim();
-            acc[county] = (acc[county] || 0) + 1;
-            return acc;
-        }, {});
+        const counties = _.map(intakeData, (item) => item.column_values[0].text);
+        const counts = _.countBy(counties);
         setCountyCounts(counts);
         if (topography) {
             const updatedGeoJson = topography;
@@ -62,21 +59,13 @@ function App() {
 
     useEffect(() => {
         setLoading(true);
-        fetchProjectSavingsDataFromApi().then((response) => {
-            const data = response.data.boards[0].items_page.items;
-            updateDashboardStats(data);
-        }).catch(console.error);
+        fetchProjectSavingsDataFromApi().then(updateDashboardStats).catch(console.error);
         setLoading(false);
     }, [setLoading]);
 
     useEffect(() => {
         setLoading(true);
-        fetchIntakeDataFromApi().then((response) => {
-            const items = response.data.boards[0].items_page.items;
-            const counties = _.map(items, (item) => item.column_values[0].text);
-            const counts = _.countBy(counties);
-            updateCountyCounts(counts);
-        }).catch(console.error);
+        fetchIntakeDataFromApi().then(updateCountyCounts).catch(console.error);
         setLoading(false);
     }, [setLoading]);
 
