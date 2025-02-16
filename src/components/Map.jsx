@@ -42,6 +42,10 @@ const Map = ({ height, data }) => {
 
   return (
     <div ref={ref} style={{ height }} className="container">
+      {/* Legend */}
+      <div className="legend">
+        <Legend color={colorScale} width={height / 1.4} tickFormat={d3.format("~s")} />
+      </div>
       <ComposableMap
         projection="geoMercator"
         projectionConfig={{
@@ -73,15 +77,10 @@ const Map = ({ height, data }) => {
         </Geographies>
       </ComposableMap>
 
-      {/* Legend */}
-      <div className="legend">
-        <Legend color={colorScale} width={height / 1.4} tickFormat={d3.format("~s")} />
-      </div>
-
       {/* Tooltip */}
       {tooltipData.show && (
         <div
-          className="tooltip"
+          className="fixed pointer-events-none bg-white border border-[#8b8ba7] rounded-[5px] p-[5px]"
           style={{
             left: tooltipData.x,
             top: tooltipData.y - 50,
@@ -89,7 +88,7 @@ const Map = ({ height, data }) => {
         >
           {tooltipData.name}
           <br />
-          {tooltipData.county}
+          People Served: {tooltipData.county}
         </div>
       )}
     </div>

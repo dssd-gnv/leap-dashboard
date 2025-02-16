@@ -51,16 +51,13 @@ const PieChart = ({ height, data }) => {
       style={{
         height,
       }}
-      className="container"
+      className="relative overflow-hidden"
     >
       <svg
         width={width}
         height={height}
         viewBox={`${-width / 2 + offsetX} ${-height / 2} ${width} ${height}`}
-        style={{
-          overflow: "visible",
-        }}
-        className="viz"
+        className="w-full h-full overflow-visible"
       >
         {arcs.map((d, i) => (
           <g
@@ -120,7 +117,7 @@ const PieChart = ({ height, data }) => {
         <g
           onMouseEnter={() => setTooltipVisible(true)}
           onMouseLeave={() => setTooltipVisible(false)}
-          className={`tooltip ${tooltipVisible ? "visible" : ""}`}
+          className={`${tooltipVisible ? "visible" : ""}`}
         >
           <rect
             width={200}
