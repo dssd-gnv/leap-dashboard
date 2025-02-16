@@ -6,7 +6,7 @@ import _ from "lodash";
 function createStatCard(showHouseHoldAverages, currencyColumns, column, values) {
     let aggregatedValue;
     // Total Savings is calculated by summing up all households regardless of toggle state
-    if (column == "Total Savings" || !showHouseHoldAverages) {
+    if (column === "Total Savings" || !showHouseHoldAverages) {
         aggregatedValue = Math.round(_.sum(_.map(values, parseFloat)) / 1000) + 'K';
     } else {
         aggregatedValue = Math.round(_.mean(_.map(values, parseFloat)));
@@ -31,7 +31,7 @@ function createGaugeCard(column, values) {
         <Fragment key={column}>
             <div className="gauge-container">
                 <h2 className="stat-heading">{column}</h2>
-                <Gauge value={aggregatedValue} />
+                <Gauge value={aggregatedValue}/>
             </div>
         </Fragment>
     )
