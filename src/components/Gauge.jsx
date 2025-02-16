@@ -1,4 +1,3 @@
-import React from "react"
 import { arc } from "d3-shape"
 import { scaleLinear } from "d3-scale"
 import { format } from "d3-format"
@@ -7,8 +6,8 @@ const Gauge = ({
   value=50,
   min=0,
   max=100,
-  label,
-  units,
+  label="",
+  units="",
 }) => {
   const backgroundArc = arc()
     .innerRadius(0.65)
@@ -28,7 +27,7 @@ const Gauge = ({
     .range([-Math.PI / 2, Math.PI / 2])
     .clamp(true)
 
-  const angle = angleScale(percent)
+  const angle = isNaN(percent) ? 0 : angleScale(percent);
 
   const filledArc = arc()
     .innerRadius(0.65)
@@ -52,7 +51,8 @@ const Gauge = ({
 
   return (
     <div>
-      <svg className="overflow-visible block m-auto w-36"
+      <svg style={{overflow: "visible", margin: "1em auto"}}
+        width="9em"
         viewBox={[
           -1, -1,
           2, 1,
@@ -91,8 +91,8 @@ const Gauge = ({
           strokeWidth="0.027"
         />
         <circle
-          cx={markerLocation[0]}
-          cy={markerLocation[1]}
+          cx={markerLocation ? 0: markerLocation[0]}
+          cy={markerLocation ? 0: markerLocation[1]}
           r="0.2"
           stroke="#2c3e50"
           strokeWidth="0.01"

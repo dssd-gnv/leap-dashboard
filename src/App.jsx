@@ -1,118 +1,122 @@
-import { useEffect, useState } from "react";
-import * as d3 from "d3";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import {useCallback, useEffect, useState} from "react";
+import {BrowserRouter as Router, Route, Routes, Link} from "react-router-dom";
 import About from "./components/About";
 import Dashboard from "./components/Dashboard";
 import Toggle from "react-toggle";
 import "react-toggle/style.css"
 import _ from "lodash";
+import {fetchDataLocally, fetchProjectSavingsDataFromApi, fetchIntakeDataFromApi} from "../util/data.js";
 
 function App() {
-  const [topography, setTopography] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [countyCounts, setCountyCounts] = useState({});
-  const [dashboardStats, setDashboardStats] = useState({});
-  const [showHouseholdAverages, setshowHouseholdAverages] = useState(false);
+    const [topography, setTopography] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [countyCounts, setCountyCounts] = useState({});
+    const [dashboardStats, setDashboardStats] = useState({});
+    const [showHouseholdAverages, setshowHouseholdAverages] = useState(false);
 
-  useEffect(() => {
-    const getData = async () => {
-      setLoading(true);
-
-      let counts = {};
-
-      await Promise.all([
-        d3.json('/data/va_county.geojson').then((geoJsonData) => {
-          setTopography(geoJsonData);
-        }),
-        d3.csv('/data/intake.csv').then((csvData) => {
-          const counts = csvData.reduce((acc, row) => {
-            const county = row['City/ County'].trim();
-            acc[county] = (acc[county] || 0) + 1;
-            return acc;
-          }, {});
-          setCountyCounts(counts);
-        }),
-        d3.csv('/data/project_savings.csv').then((csvData) => {
-          let numerical_columns = [
-            'kWh Saved',
-            'CO2 Tons Diverted',
-            'Annual Fuel Therms Saved'
-          ]
-          let currency_columns = [
-            'Annual Fuel Dollars Saved',
-            'Annual Electric Dollars Saved',
-            'Total Savings'
-          ]
-          let gauge_column = 'HVAC Duct Efficiency Improved';
-          let sum_columns = numerical_columns.concat(currency_columns);
-          let newData = {};
-          _.forEach(csvData, (row) => {
-            let picked = _.pick(row, sum_columns.concat(gauge_column));
-            _.forEach(picked, (value, key) => {
-              if (_.includes(_.keys(newData), key)) {
-                newData[key].push(value);
-              } else {
-                newData[key] = [value];
-              }
+    const updateCountyCounts = useCallback((intakeData) => {
+        const counties = _.map(intakeData, (item) => item.column_values[0].text);
+        const counts = _.countBy(counties);
+        setCountyCounts(counts);
+        if (topography) {
+            const updatedGeoJson = topography;
+            updatedGeoJson.features.forEach((feature) => {
+                const county = feature.properties.NAMELSAD.trim();
+                feature.properties.count = countyCounts[county] || 0;
             });
-          });
-          setDashboardStats(newData);
-        })
-      ]);
+            setTopography(updatedGeoJson);
+        }
+    }, [topography, countyCounts, setCountyCounts, setTopography]);
 
-      if (topography) {
-        const updatedGeoJson = topography;
-        updatedGeoJson.features.forEach((feature) => {
-          const county = feature.properties.NAMELSAD.trim();
-          const count = counts[county] || 0;
-          feature.properties.count = count;
+    const updateDashboardStats = useCallback((projectSavingsData) => {
+        let newData = {};
+        _.forEach(projectSavingsData, (item) => {
+            const column_values = item.column_values;
+            _.forEach(column_values, (column_value) => {
+                const key = column_value.column.title;
+                let value = parseFloat(column_value.text);
+                if (_.isNaN(value)) {
+                    value = 0;
+                }
+                if (_.includes(_.keys(newData), key)) {
+                    newData[key].push(value);
+                } else {
+                    newData[key] = [value];
+                }
+            });
         });
-        setTopography(updatedGeoJson);
-      }
-      setLoading(false);
-    };
-    getData();
-  }, []);
+        setDashboardStats(newData);
+    }, []);
 
-  if (loading) {
+    useEffect(() => {
+        setLoading(true);
+        fetchDataLocally()
+            .then((data) => {
+                setTopography(data['geoJsonData']);
+            }).catch(console.error);
+        setLoading(false);
+    }, [setLoading, setTopography, updateCountyCounts, updateDashboardStats]);
+
+    useEffect(() => {
+        setLoading(true);
+        fetchProjectSavingsDataFromApi().then(updateDashboardStats).catch(console.error);
+        setLoading(false);
+    }, [setLoading]);
+
+    useEffect(() => {
+        setLoading(true);
+        fetchIntakeDataFromApi().then(updateCountyCounts).catch(console.error);
+        setLoading(false);
+    }, [setLoading]);
+
+    if (loading) {
+        return (
+            <div className="dashboard">
+                <div className="wrapper">
+                    <header className="logo-header">
+                        <img src="/images/logo_main.png" alt="Logo" className="logo"/>
+                    </header>
+                </div>
+            </div>
+        )
+    }
+
     return (
-      <div className="dashboard">
-        <header className="flex justify-between m-auto p-[1.5vh]">
-          <img src="/images/logo_main.png" alt="Logo" className="flex w-auto h-[7vh] align-middle" />
-        </header>
-      </div>
-    )
-  }
-
-  return (
-    <Router>
-      <div className="dashboard">
-        <div className="wrapper">
-          <header className="flex justify-between m-auto p-[1.5vh]">
-            <div>
-              <Link to="/">
-                <img src="/images/logo_main.png" alt="Logo" className="flex w-auto h-[7vh] align-middle" />
-              </Link>
+        <Router>
+            <div className="dashboard">
+                <div className="wrapper">
+                    <header>
+                        <div className="logo-header">
+                            <Link to="/">
+                                <img src="/images/logo_main.png" alt="Logo" className="logo"/>
+                            </Link>
+                        </div>
+                        <div className="button-container">
+                            <span style={{padding: "1em 1em 0em 0em"}}>State Totals</span>
+                            <div style={{paddingTop: "1em"}}>
+                                <Toggle
+                                    defaultChecked={showHouseholdAverages}
+                                    onChange={() => setshowHouseholdAverages(!showHouseholdAverages)}
+                                />
+                            </div>
+                            <span style={{padding: "0.5em 1em 0em 1em"}}>Household Averages</span>
+                            <a target="_blank" rel="noreferrer" href="https://www.leap-va.org/" className="button">About
+                                LEAP</a>
+                            <Link to="/About" className="button">About this Dashboard</Link>
+                        </div>
+                    </header>
+                    <main className="main">
+                        <Routes>
+                            <Route path="/About" element={<About/>}/>
+                            <Route path="/" element={<Dashboard showHouseholdAverages={showHouseholdAverages}
+                                                                dashboardStats={dashboardStats} topography={topography}
+                                                                countyCounts={countyCounts}/>}/>
+                        </Routes>
+                    </main>
+                </div>
             </div>
-            <div className="flex justify-end items-center gap-[1vw]">
-              <button className="flex items-center py-[10px] px-[20px] text-[1.1rem] font-medium text-white bg-[#386fa4] rounded-[0.75rem] no-underline transition-colors duration-300 hover:bg-blue-900">
-                <Link to="https://www.leap-va.org/">About LEAP</Link>
-              </button>
-              <button className="flex items-center py-[10px] px-[20px] text-[1.1rem] font-medium text-white bg-[#386fa4] rounded-[0.75rem] no-underline transition-colors duration-300 hover:bg-blue-900">
-                <Link to="/About" className="button">About this Dashboard</Link>
-              </button>
-            </div>
-          </header>
-          <main className="main">
-            <Routes>
-              <Route path="/About" element={<About />} />
-              <Route path="/" element={<Dashboard showHouseholdAverages={showHouseholdAverages} dashboardStats={dashboardStats} topography={topography} countyCounts={countyCounts} />} />
-            </Routes>
-          </main>
-        </div>
-      </div>
-    </Router>
-  );
+        </Router>
+    );
 }
 
 export default App;
