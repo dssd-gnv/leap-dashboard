@@ -51,12 +51,8 @@ const Gauge = ({
   )
 
   return (
-    <div
-      style={{
-        textAlign: "center",
-      }}>
-      <svg style={{overflow: "visible"}}
-        width="9em"
+    <div>
+      <svg className="overflow-visible block m-auto w-36"
         viewBox={[
           -1, -1,
           2, 1,
