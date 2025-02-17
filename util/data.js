@@ -1,32 +1,16 @@
 import * as d3 from "d3";
 import _ from "lodash";
 
-const apiKey = import.meta.env.VITE_MONDAY_API_KEY;
-
-const fetchDataLocally = async () => {
-    const geoJsonData = await d3.json('/data/va_county.geojson');
-    const intakeData = await d3.csv('/data/intake.csv');
-    const projectSavingsData = await d3.csv('/data/project_savings.csv');
-    return {
-        "geoJsonData": geoJsonData,
-        "intakeData": intakeData,
-        "projectSavingsData": projectSavingsData
-    };
+const fetchGeoJsonDataLocally = async () => {
+    return await d3.json('/data/va_county.geojson');
 };
 
 const sendFetchRequest = async (query) => {
-    const response = await fetch("https://api.monday.com/v2", {
+    const response = await fetch('./api/fetchData', {
         method: 'POST',
-        cache: 'no-cache',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `${apiKey}`,
-        },
-        body: JSON.stringify({
-            'query': query
-        })
+        body: JSON.stringify({ "query": query }),
     });
-    return response.json();
+    return await response.json();
 }
 
 const populateIntakeData = (intakeData, items) => {
@@ -92,7 +76,7 @@ const fetchIntakeDataFromApi = async () => {
 }
 
 export {
-    fetchDataLocally,
+    fetchGeoJsonDataLocally,
     fetchProjectSavingsDataFromApi,
     fetchIntakeDataFromApi
 };

@@ -5,7 +5,7 @@ import Dashboard from "./components/Dashboard";
 import Toggle from "react-toggle";
 import "react-toggle/style.css"
 import _ from "lodash";
-import {fetchDataLocally, fetchProjectSavingsDataFromApi, fetchIntakeDataFromApi} from "../util/data.js";
+import {fetchGeoJsonDataLocally, fetchProjectSavingsDataFromApi, fetchIntakeDataFromApi} from "../util/data.js";
 
 function App() {
     const [topography, setTopography] = useState(null);
@@ -50,10 +50,8 @@ function App() {
 
     useEffect(() => {
         setLoading(true);
-        fetchDataLocally()
-            .then((data) => {
-                setTopography(data['geoJsonData']);
-            }).catch(console.error);
+        fetchGeoJsonDataLocally()
+            .then(setTopography).catch(console.error);
         setLoading(false);
     }, [setLoading, setTopography, updateCountyCounts, updateDashboardStats]);
 
@@ -73,7 +71,7 @@ function App() {
         return (
             <div className="dashboard">
                 <div className="wrapper">
-                    <header className="logo-header">
+                    <header className="flex justify-between m-auto p-[1.5vh]">
                         <img src="/images/logo_main.png" alt="Logo" className="logo"/>
                     </header>
                 </div>
@@ -85,13 +83,13 @@ function App() {
         <Router>
             <div className="dashboard">
                 <div className="wrapper">
-                    <header>
-                        <div className="logo-header">
+                    <header className="flex justify-between m-auto p-[1.5vh]">
+                        <div>
                             <Link to="/">
-                                <img src="/images/logo_main.png" alt="Logo" className="logo"/>
+                                <img src="/images/logo_main.png" alt="Logo" className="flex w-auto h-[7vh] align-middle"/>
                             </Link>
                         </div>
-                        <div className="button-container">
+                        <div className="flex justify-end items-center gap-[1vw]">
                             <span style={{padding: "1em 1em 0em 0em"}}>State Totals</span>
                             <div style={{paddingTop: "1em"}}>
                                 <Toggle
@@ -100,9 +98,12 @@ function App() {
                                 />
                             </div>
                             <span style={{padding: "0.5em 1em 0em 1em"}}>Household Averages</span>
-                            <a target="_blank" rel="noreferrer" href="https://www.leap-va.org/" className="button">About
-                                LEAP</a>
-                            <Link to="/About" className="button">About this Dashboard</Link>
+                            <button className="flex items-center py-[10px] px-[20px] text-[1.1rem] font-medium text-white bg-[#386fa4] rounded-[0.75rem] no-underline transition-colors duration-300 hover:bg-blue-900">
+                                <Link to="https://www.leap-va.org/">About LEAP</Link>
+                            </button>
+                            <button className="flex items-center py-[10px] px-[20px] text-[1.1rem] font-medium text-white bg-[#386fa4] rounded-[0.75rem] no-underline transition-colors duration-300 hover:bg-blue-900">
+                                <Link to="/About" className="button">About this Dashboard</Link>
+                            </button>
                         </div>
                     </header>
                     <main className="main">
