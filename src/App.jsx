@@ -5,7 +5,7 @@ import Dashboard from "./components/Dashboard";
 import Toggle from "react-toggle";
 import "react-toggle/style.css"
 import _ from "lodash";
-import {fetchDataLocally, fetchProjectSavingsDataFromApi, fetchIntakeDataFromApi} from "../util/data.js";
+import {fetchGeoJsonDataLocally, fetchProjectSavingsDataFromApi, fetchIntakeDataFromApi} from "../util/data.js";
 
 function App() {
     const [topography, setTopography] = useState(null);
@@ -50,10 +50,8 @@ function App() {
 
     useEffect(() => {
         setLoading(true);
-        fetchDataLocally()
-            .then((data) => {
-                setTopography(data['geoJsonData']);
-            }).catch(console.error);
+        fetchGeoJsonDataLocally()
+            .then(setTopography).catch(console.error);
         setLoading(false);
     }, [setLoading, setTopography, updateCountyCounts, updateDashboardStats]);
 
