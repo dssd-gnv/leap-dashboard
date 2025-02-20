@@ -39,7 +39,7 @@ const Gauge = ({
 
   const colorScale = scaleLinear()
     .domain([0, 1])
-    .range(["#DAEBFB", "#386FA4"])
+    .range(["#EDF5FD", "#386FA4"])
 
   const gradientSteps = colorScale.ticks(10)
     .map(value => colorScale(value))
