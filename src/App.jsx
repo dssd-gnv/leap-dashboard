@@ -1,11 +1,11 @@
-import {useCallback, useEffect, useState} from "react";
-import {BrowserRouter as Router, Route, Routes, Link} from "react-router-dom";
+import {Fragment, useCallback, useEffect, useState} from "react";
+import {BrowserRouter as Router, Link, Route, Routes} from "react-router-dom";
 import About from "./components/About";
 import Dashboard from "./components/Dashboard";
 import Toggle from "react-toggle";
 import "react-toggle/style.css"
 import _ from "lodash";
-import {fetchGeoJsonDataLocally, fetchProjectSavingsDataFromApi, fetchIntakeDataFromApi} from "../util/data.js";
+import {fetchGeoJsonDataLocally, fetchIntakeDataFromApi, fetchProjectSavingsDataFromApi} from "../util/data.js";
 
 function App() {
     const [topography, setTopography] = useState(null);
@@ -13,6 +13,26 @@ function App() {
     const [countyCounts, setCountyCounts] = useState({});
     const [dashboardStats, setDashboardStats] = useState({});
     const [showHouseholdAverages, setshowHouseholdAverages] = useState(false);
+
+    const displayToggle = (window) => {
+        if (window.location.pathname === "/") {
+            return (
+                <Fragment>
+                    <span style={{padding: "1em 1em 0em 0em"}}>State Totals</span>
+                    <div style={{paddingTop: "1em"}}>
+                        <Toggle
+                            defaultChecked={showHouseholdAverages}
+                            onChange={() => setshowHouseholdAverages(!showHouseholdAverages)}
+                        />
+                    </div>
+                    <span style={{padding: "0.5em 1em 0em 1em"}}>Household Averages</span>
+                </Fragment>
+            )
+        }
+        return (
+            <Fragment></Fragment>
+        )
+    }
 
     const updateCountyCounts = useCallback((intakeData) => {
         const counties = _.map(intakeData, (item) => item.column_values[0].text);
@@ -86,22 +106,20 @@ function App() {
                     <header className="flex justify-between m-auto p-[1.5vh]">
                         <div>
                             <Link to="/">
-                                <img src="/images/logo_main.png" alt="Logo" className="flex w-auto h-[7vh] align-middle"/>
+                                <img src="/images/logo_main.png" alt="Logo"
+                                     className="flex w-auto h-[7vh] align-middle"/>
                             </Link>
                         </div>
                         <div className="flex justify-end items-center gap-[1vw]">
-                            <span style={{padding: "1em 1em 0em 0em"}}>State Totals</span>
-                            <div style={{paddingTop: "1em"}}>
-                                <Toggle
-                                    defaultChecked={showHouseholdAverages}
-                                    onChange={() => setshowHouseholdAverages(!showHouseholdAverages)}
-                                />
-                            </div>
-                            <span style={{padding: "0.5em 1em 0em 1em"}}>Household Averages</span>
-                            <button className="flex items-center py-[10px] px-[20px] text-[1.1rem] font-medium text-white bg-[#386fa4] rounded-[0.75rem] no-underline transition-colors duration-300 hover:bg-blue-900">
+                            {
+                                displayToggle(window)
+                            }
+                            <button
+                                className="flex items-center py-[10px] px-[20px] text-[1.1rem] font-medium text-white bg-[#386fa4] rounded-[0.75rem] no-underline transition-colors duration-300 hover:bg-blue-900">
                                 <Link to="https://www.leap-va.org/">About LEAP</Link>
                             </button>
-                            <button className="flex items-center py-[10px] px-[20px] text-[1.1rem] font-medium text-white bg-[#386fa4] rounded-[0.75rem] no-underline transition-colors duration-300 hover:bg-blue-900">
+                            <button
+                                className="flex items-center py-[10px] px-[20px] text-[1.1rem] font-medium text-white bg-[#386fa4] rounded-[0.75rem] no-underline transition-colors duration-300 hover:bg-blue-900">
                                 <Link to="/About" className="button">About this Dashboard</Link>
                             </button>
                         </div>
