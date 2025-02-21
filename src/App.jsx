@@ -1,18 +1,21 @@
-import {Fragment, useCallback, useEffect, useState} from "react";
+import {Fragment, useEffect, useState} from "react";
 import {BrowserRouter as Router, Link, Route, Routes} from "react-router-dom";
 import About from "./components/About";
 import Dashboard from "./components/Dashboard";
 import Toggle from "react-toggle";
 import "react-toggle/style.css"
-import _ from "lodash";
-import {fetchGeoJsonDataLocally, fetchIntakeDataFromApi, fetchProjectSavingsDataFromApi} from "../util/data.js";
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchGeoJsonDataLocally } from "./store/topographySlice.js";
+import { fetchIntakeDataFromApi } from "./store/countyCountsSlice.js";
+import { fetchProjectSavingsDataFromApi } from "./store/dashboardStatsSlice.js";
 
 function App() {
-    const [topography, setTopography] = useState(null);
+    const topography = useSelector(state => state.topography);
+    const countyCounts = useSelector(state => state.countryCounts);
+    const dashboardStats = useSelector(state => state.dashboardStats);
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
-    const [countyCounts, setCountyCounts] = useState({});
-    const [dashboardStats, setDashboardStats] = useState({});
-    const [showHouseholdAverages, setshowHouseholdAverages] = useState(false);
+    const [showHouseholdAverages, setShowHouseholdAverages] = useState(false);
 
     const displayToggle = (window) => {
         if (window.location.pathname === "/") {
@@ -22,7 +25,7 @@ function App() {
                     <div style={{paddingTop: "1em"}}>
                         <Toggle
                             defaultChecked={showHouseholdAverages}
-                            onChange={() => setshowHouseholdAverages(!showHouseholdAverages)}
+                            onChange={() => setShowHouseholdAverages(!showHouseholdAverages)}
                         />
                     </div>
                     <span style={{padding: "0.5em 1em 0em 1em"}}>Household Averages</span>
@@ -34,58 +37,13 @@ function App() {
         )
     }
 
-    const updateCountyCounts = useCallback((intakeData) => {
-        const counties = _.map(intakeData, (item) => item.column_values[0].text);
-        const counts = _.countBy(counties);
-        setCountyCounts(counts);
-        if (topography) {
-            const updatedGeoJson = topography;
-            updatedGeoJson.features.forEach((feature) => {
-                const county = feature.properties.NAMELSAD.trim();
-                feature.properties.count = countyCounts[county] || 0;
-            });
-            setTopography(updatedGeoJson);
-        }
-    }, [topography, countyCounts, setCountyCounts, setTopography]);
-
-    const updateDashboardStats = useCallback((projectSavingsData) => {
-        let newData = {};
-        _.forEach(projectSavingsData, (item) => {
-            const column_values = item.column_values;
-            _.forEach(column_values, (column_value) => {
-                const key = column_value.column.title;
-                let value = parseFloat(column_value.text);
-                if (_.isNaN(value)) {
-                    value = 0;
-                }
-                if (_.includes(_.keys(newData), key)) {
-                    newData[key].push(value);
-                } else {
-                    newData[key] = [value];
-                }
-            });
-        });
-        setDashboardStats(newData);
-    }, []);
-
     useEffect(() => {
         setLoading(true);
-        fetchGeoJsonDataLocally()
-            .then(setTopography).catch(console.error);
+        dispatch(fetchGeoJsonDataLocally());
+        dispatch(fetchProjectSavingsDataFromApi());
+        dispatch(fetchIntakeDataFromApi());
         setLoading(false);
-    }, [setLoading, setTopography, updateCountyCounts, updateDashboardStats]);
-
-    useEffect(() => {
-        setLoading(true);
-        fetchProjectSavingsDataFromApi().then(updateDashboardStats).catch(console.error);
-        setLoading(false);
-    }, [setLoading]);
-
-    useEffect(() => {
-        setLoading(true);
-        fetchIntakeDataFromApi().then(updateCountyCounts).catch(console.error);
-        setLoading(false);
-    }, [setLoading]);
+    }, [dispatch]);
 
     if (loading) {
         return (
