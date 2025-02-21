@@ -1,10 +1,9 @@
-import {Fragment, useCallback, useEffect, useState} from "react";
+import {Fragment, useEffect, useState} from "react";
 import {BrowserRouter as Router, Link, Route, Routes} from "react-router-dom";
 import About from "./components/About";
 import Dashboard from "./components/Dashboard";
 import Toggle from "react-toggle";
 import "react-toggle/style.css"
-import _ from "lodash";
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchGeoJsonDataLocally } from "./store/topographySlice.js";
 import { fetchIntakeDataFromApi } from "./store/countyCountsSlice.js";

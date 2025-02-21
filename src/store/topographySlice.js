@@ -1,6 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import * as d3 from "d3";
-import _ from "lodash";
 import {setCountyCounts} from "./countyCountsSlice.js";
 
 export const fetchGeoJsonDataLocally = createAsyncThunk(
