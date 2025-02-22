@@ -4,7 +4,7 @@ import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import Legend from "./Legend";
 import useChartDimensions from "../hooks/useChartDimensions";
 
-const Map = ({ height, data }) => {
+const DashboardMap = ({ height, data }) => {
   const { topography, countyCounts } = data;
 
   const [ref, dms] = useChartDimensions({});
@@ -95,4 +95,4 @@ const Map = ({ height, data }) => {
   );
 };
 
-export default Map;
+export default DashboardMap;

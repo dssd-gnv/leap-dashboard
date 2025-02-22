@@ -1,6 +1,7 @@
 import Map from "./Map";
 import { Fragment } from "react";
 import _ from "lodash";
+import DashboardMap from "./DashboardMap.jsx";
 
 function createStatCard(showHouseHoldAverages, currencyColumns, column, values) {
     let aggregatedValue;
@@ -52,7 +53,7 @@ export default function Dashboard({ showHouseholdAverages, dashboardStats, topog
             }
             <div className="map-container col-span-3 row-span-3">
                 <h2 className="stat-heading">Where We Serve in Virginia</h2>
-                <Map
+                <DashboardMap
                     height={500}
                     data={{ topography, countyCounts }}
                 />
