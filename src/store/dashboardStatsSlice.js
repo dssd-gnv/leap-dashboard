@@ -10,7 +10,7 @@ export const fetchProjectSavingsDataFromApi = createAsyncThunk(
                 "    items_page(limit: 500) {\n" +
                 "      items {\n" +
                 "        column_values(\n" +
-                "          ids: [\"numbers3__1\", \"numbers4__1\", \"numbers_2__1\", \"numbers_3__1\", \"numbers_4__1\", \"numbers_5__1\", \"numbers05__1\"]\n" +
+                "          ids: [\"numbers3__1\", \"numbers4__1\", \"numbers_2__1\", \"numbers_3__1\", \"numbers_4__1\", \"numbers_5__1\"]\n" +
                 "        ) {\n" +
                 "          column {\n" +
                 "            title\n" +
@@ -31,7 +31,10 @@ export const fetchProjectSavingsDataFromApi = createAsyncThunk(
 
 const dashboardStatsSlice = createSlice({
     name: 'dashboardStats',
-    initialState: {},
+    initialState: {
+        "dashboardStatsLoading": true,
+        "dashboardStatsData": {}
+    },
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(fetchProjectSavingsDataFromApi.fulfilled, (state, action) => {
@@ -51,7 +54,10 @@ const dashboardStatsSlice = createSlice({
                     }
                 });
             });
-            return newData;
+            return {
+                "dashboardStatsLoading": false,
+                "dashboardStatsData": newData
+            }
         });
     }
 });

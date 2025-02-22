@@ -47,19 +47,17 @@ export const fetchIntakeDataFromApi = createAsyncThunk(
 
 const countyCountsSlice = createSlice({
     name: 'countyCounts',
-    initialState: {},
-    reducers: {
-        setCountyCounts: (state, action) => {
-            return action.payload;
-        }
+    initialState: {
+        "countyCountsLoading": true,
+        "countyCountsData": {}
     },
+    reducers: {},
     extraReducers: (builder) => {
         builder.addCase(fetchIntakeDataFromApi.fulfilled, (state, action) => {
-            const counties = _.map(action.payload, (item) => item.column_values[0].text);
-            return  _.countBy(counties);
+            const counties = _.map(action.payload, (item) => item?.column_values[0].text);
+            return {"countyCountsLoading": false, "countyCountsData": _.countBy(counties)};
         });
     }
 });
 
-export const { setCountyCounts } = countyCountsSlice.actions;
 export default countyCountsSlice.reducer;
