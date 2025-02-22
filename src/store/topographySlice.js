@@ -1,6 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import * as d3 from "d3";
-import {setCountyCounts} from "./countyCountsSlice.js";
 
 export const fetchGeoJsonDataLocally = createAsyncThunk(
     'fetchGeoJsonDataLocally', async () => {
@@ -14,20 +13,14 @@ export const fetchGeoJsonDataLocally = createAsyncThunk(
 
 const topographySlice = createSlice({
     name: 'topography',
-    initialState: null,
+    initialState: {
+        "topographyLoading": true,
+        "topographyData": null
+    },
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(fetchGeoJsonDataLocally.fulfilled, (state, action) => {
-            return action.payload;
-        });
-
-        builder.addCase(setCountyCounts, (state, action) => {
-            const updatedGeoJson = state;
-            updatedGeoJson.features.forEach((feature) => {
-                const county = feature.properties.NAMELSAD.trim();
-                feature.properties.count = action.payload[county] || 0;
-            });
-            return updatedGeoJson;
+            return {"topographyLoading": false, "topographyData": action.payload};
         });
     }
 });

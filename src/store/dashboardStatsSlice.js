@@ -31,7 +31,10 @@ export const fetchProjectSavingsDataFromApi = createAsyncThunk(
 
 const dashboardStatsSlice = createSlice({
     name: 'dashboardStats',
-    initialState: {},
+    initialState: {
+        "dashboardStatsLoading": true,
+        "dashboardStatsData": {}
+    },
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(fetchProjectSavingsDataFromApi.fulfilled, (state, action) => {
@@ -51,7 +54,10 @@ const dashboardStatsSlice = createSlice({
                     }
                 });
             });
-            return newData;
+            return {
+                "dashboardStatsLoading": false,
+                "dashboardStatsData": newData
+            }
         });
     }
 });

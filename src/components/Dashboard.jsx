@@ -3,11 +3,14 @@ import _ from "lodash";
 import DashboardMap from "./DashboardMap.jsx";
 
 function createMap(dashboardStats, columnMapping) {
-    const dashboardStatsMap = new Map();
-    _.chain(_.map(columnMapping, (entry) => entry.column)).forEach((column) => {
-        dashboardStatsMap.set(column, dashboardStats[column]);
-    }).value();
-    return dashboardStatsMap;
+    if (dashboardStats) {
+        const dashboardStatsMap = new Map();
+        _.chain(_.map(columnMapping, (entry) => entry.column)).forEach((column) => {
+            dashboardStatsMap.set(column, dashboardStats[column]);
+        }).value();
+        return dashboardStatsMap;
+    }
+    return new Map();
 }
 
 function createStatCard(showHouseHoldAverages, columnMapping, column, values) {
@@ -86,10 +89,12 @@ export default function Dashboard({ showHouseholdAverages, dashboardStats, topog
             }
             <div className="map-container col-span-3 row-span-3">
                 <h2 className="stat-heading">Where We Serve in Virginia</h2>
-                <DashboardMap
-                    height={500}
-                    data={{ topography, countyCounts }}
-                />
+                {
+                    countyCounts && <DashboardMap
+                        height={500}
+                        data={{ topography, countyCounts }}
+                    />
+                }
             </div>
             {
                 Array.from(dashboardStatsMap.entries())

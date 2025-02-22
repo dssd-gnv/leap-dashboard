@@ -10,13 +10,11 @@ import { fetchIntakeDataFromApi } from "./store/countyCountsSlice.js";
 import { fetchProjectSavingsDataFromApi } from "./store/dashboardStatsSlice.js";
 
 function App() {
-    const topography = useSelector(state => state.topography);
-    const countyCounts = useSelector(state => state.countryCounts);
-    const dashboardStats = useSelector(state => state.dashboardStats);
+    const { topographyLoading, topographyData } = useSelector(state => state.topography);
+    const { countyCountsLoading, countyCountsData } = useSelector(state => state.countyCounts);
+    const { dashboardStatsLoading, dashboardStatsData} = useSelector(state => state.dashboardStats);
     const dispatch = useDispatch();
-    const [loading, setLoading] = useState(true);
     const [showHouseholdAverages, setShowHouseholdAverages] = useState(false);
-
     const displayToggle = (window) => {
         if (window.location.pathname === "/") {
             return (
@@ -38,15 +36,31 @@ function App() {
         )
     }
 
+    const updateTopographyDataWithCountyCounts = (topographyData, countyCountsData) => {
+        if (topographyData && countyCountsData) {
+            topographyData.features.forEach(feature => {
+                const countyName = feature.properties.NAMELSAD.trim();
+                const countyCount = countyCountsData[countyName] || 0;
+                return {
+                    ...feature,
+                    properties: {
+                        ...feature.properties,
+                        countyCount
+                    }
+                };
+            });
+        }
+        return topographyData;
+    }
+
     useEffect(() => {
-        setLoading(true);
         dispatch(fetchGeoJsonDataLocally());
-        dispatch(fetchProjectSavingsDataFromApi());
         dispatch(fetchIntakeDataFromApi());
-        setLoading(false);
+        dispatch(fetchProjectSavingsDataFromApi());
+        updateTopographyDataWithCountyCounts(topographyData, countyCountsData);
     }, [dispatch]);
 
-    if (loading) {
+    if (topographyLoading || dashboardStatsLoading || countyCountsLoading) {
         return (
             <div className="dashboard">
                 <div className="wrapper">
@@ -60,8 +74,8 @@ function App() {
 
     return (
         <Router>
-            <div className="dashboard">
-                <div className="wrapper">
+            <Fragment>
+                <div className="relative min-h-screen">
                     <header className="flex justify-between m-auto p-[1.5vh]">
                         <div>
                             <Link to="/">
@@ -87,12 +101,12 @@ function App() {
                         <Routes>
                             <Route path="/About" element={<About/>}/>
                             <Route path="/" element={<Dashboard showHouseholdAverages={showHouseholdAverages}
-                                                                dashboardStats={dashboardStats} topography={topography}
-                                                                countyCounts={countyCounts}/>}/>
+                                                                dashboardStats={dashboardStatsData} topography={topographyData}
+                                                                countyCounts={countyCountsData}/>}/>
                         </Routes>
                     </main>
                 </div>
-            </div>
+            </Fragment>
         </Router>
     );
 }
