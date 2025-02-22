@@ -26,7 +26,7 @@ function createStatCard(showHouseHoldAverages, currencyColumns, column, values) 
 export default function Dashboard({ showHouseholdAverages, dashboardStats, topography, countyCounts }) {
     const numericalColumns = [
         'kWh Saved',
-        'CO 2 Tons',
+        'CO₂ Tons',
         'Annual Fuel Therms Saved'
     ];
     const currencyColumns = [
