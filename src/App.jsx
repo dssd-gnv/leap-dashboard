@@ -65,7 +65,7 @@ function App() {
         return (
             <Fragment>
                 <div className="flex h-screen items-center justify-center">
-                    <ReactLoading type="spin" color="black" height="10%" width="10%" />
+                    <ReactLoading type="spin" color="#4292c6" height="5%" width="5%" />
                 </div>
             </Fragment>
         )
