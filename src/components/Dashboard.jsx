@@ -5,8 +5,7 @@ import _ from "lodash";
 
 function createStatCard(showHouseHoldAverages, currencyColumns, column, values) {
     let aggregatedValue;
-    // Total Savings is calculated by summing up all households regardless of toggle state
-    if (column === "Total Savings" || !showHouseHoldAverages) {
+    if (!showHouseHoldAverages) {
         aggregatedValue = _.round(_.sum(values) / 1000) + 'K';
     } else {
         aggregatedValue = _.round(_.mean(values));
