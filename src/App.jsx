@@ -25,6 +25,7 @@ function App() {
                     <div style={{paddingTop: "1em"}}>
                         <Toggle
                             defaultChecked={showHouseholdAverages}
+                            icons={false}
                             onChange={() => setShowHouseholdAverages(!showHouseholdAverages)}
                         />
                     </div>
