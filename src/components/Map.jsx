@@ -88,7 +88,7 @@ const Map = ({ height, data }) => {
         >
           {tooltipData.name}
           <br />
-          People Served: {tooltipData.county}
+          Households Served: {tooltipData.county}
         </div>
       )}
     </div>
