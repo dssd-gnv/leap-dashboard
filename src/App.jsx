@@ -1,4 +1,5 @@
 import {Fragment, useEffect, useState} from "react";
+import ReactLoading from "react-loading";
 import {BrowserRouter as Router, Link, Route, Routes} from "react-router-dom";
 import About from "./components/About";
 import Dashboard from "./components/Dashboard";
@@ -62,13 +63,11 @@ function App() {
 
     if (topographyLoading || dashboardStatsLoading || countyCountsLoading) {
         return (
-            <div className="dashboard">
-                <div className="wrapper">
-                    <header className="flex justify-between m-auto p-[1.5vh]">
-                        <img src="/images/logo_main.png" alt="Logo" className="logo"/>
-                    </header>
+            <Fragment>
+                <div className="flex h-screen items-center justify-center">
+                    <ReactLoading type="spin" color="black" height="10%" width="10%" />
                 </div>
-            </div>
+            </Fragment>
         )
     }
 
