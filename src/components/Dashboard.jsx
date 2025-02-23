@@ -27,9 +27,10 @@ function createStatCard(showHouseHoldAverages, columnMapping, column, values) {
     const dashboardDisplay = _.chain(columnMapping).filter(entry => entry.column === column).map((entry) => entry.dashboardDisplay).value();
     return (
         <Fragment key={column}>
-            <div className="card stat-card">
-                <h2 className="stat-heading">{dashboardDisplay}</h2>
-                <span className="stat">{aggregatedValue}</span>
+            <div className="h-33 bg-[#fff] text-center items-center rounded-xl p-[1rem] shadow-lg
+        transform transition duration-300 hover:scale-[1.02] hover:shadow-xl cursor-pointer">
+                <h2 className="text-xl mb-2">{dashboardDisplay}</h2>
+                <span className="text-[#4292c6] text-5xl font-semibold mb-4 flex-grow">{aggregatedValue}</span>
             </div>
         </Fragment>
     );
@@ -74,7 +75,7 @@ export default function Dashboard({ showHouseholdAverages, dashboardStats, topog
     const firstRowColumns = _.chain(columnMapping).map((entry) => entry.column).take(4).value();
     const secondRowColumns = _.chain(columnMapping).map((entry) => entry.column).splice(4).value();
     return (
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid pt-16 grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
             {
                 Array.from(dashboardStatsMap.entries())
                     .filter((entry) => {
@@ -87,7 +88,7 @@ export default function Dashboard({ showHouseholdAverages, dashboardStats, topog
                         return createStatCard(showHouseholdAverages, columnMapping, column, values);
                     })
             }
-            <div className="map-container col-span-3 row-span-3">
+            <div className="map-container lg:col-span-1 xl:col-span-3 row-span-3">
                 <h2 className="stat-heading">Where We Serve in Virginia</h2>
                 {
                     countyCounts && <DashboardMap

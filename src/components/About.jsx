@@ -6,7 +6,7 @@ const About = () => {
       <h1 className="text-5xl font-bold mb-4 text-center mb-16">About this Dashboard</h1>
 
       {/* Grid container for 2x2 boxes */}
-      <div className="grid grid-cols-2 gap-8 mb-16">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
         {/* Box 1 */}
         <div className="card p-4 bg-white rounded-lg shadow-lg">
           <h2 className="text-xl font-bold flex items-center mb-4">

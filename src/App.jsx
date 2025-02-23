@@ -20,15 +20,13 @@ function App() {
         if (window.location.pathname === "/") {
             return (
                 <Fragment>
-                    <span style={{padding: "1em 1em 0em 0em"}}>State Totals</span>
-                    <div style={{paddingTop: "1em"}}>
-                        <Toggle
+                    <span className='pr-4 text-sm text-nowrap md:text-base'>State Totals</span>
+                    <Toggle
                             defaultChecked={showHouseholdAverages}
                             icons={false}
                             onChange={() => setShowHouseholdAverages(!showHouseholdAverages)}
                         />
-                    </div>
-                    <span style={{padding: "0.5em 1em 0em 1em"}}>Household Averages</span>
+                    <span className='pl-4 pr-4 text-sm text-nowrap md:text-base'>Household Averages</span>
                 </Fragment>
             )
         }
@@ -73,39 +71,44 @@ function App() {
 
     return (
         <Router>
-            <Fragment>
-                <div className="relative min-h-screen">
-                    <header className="flex justify-between m-auto p-[1.5vh]">
-                        <div>
-                            <Link to="/">
-                                <img src="/images/logo_main.png" alt="Logo"
-                                     className="flex w-auto h-[7vh] align-middle"/>
+            <div className='max-w-screen overflow-x-hidden'>
+                <div className='fixed inset-x-0 top-0 z-10 border-b border-black/5 dark:border-white/10'>
+                    <div className='bg-white'>
+                        {/* Main navbar content */}
+                        <div className='flex h-14 items-center justify-between gap-8 px-4 sm:px-6'>
+                            <Link to="/" className='flex items-center space-x-3 shrink-0'>
+                                <img
+                                    src="/images/logo_main.png"
+                                    alt="Logo"
+                                    width={100}
+                                />
                             </Link>
+                            <div className='flex justify-end items-center gap-[1vw]'>
+                                {
+                                    displayToggle(window)
+                                }
+                                <div className='hidden md:flex items-center gap-[1vw]'>
+                                    <Link to="https://www.leap-va.org/"
+                                          className="py-[10px] px-[20px] bg-[#386fa4] font-bold text-white rounded-md hover:bg-opacity-90 transition-all duration-200 ease-out">About
+                                        LEAP</Link>
+                                    <Link to="/About"
+                                          className="py-[10px] px-[20px] bg-[#386fa4] font-bold text-white rounded-md hover:bg-opacity-90 transition-all duration-200 ease-out">About
+                                        this Dashboard</Link>
+                                </div>
+                            </div>
                         </div>
-                        <div className="flex justify-end items-center gap-[1vw]">
-                            {
-                                displayToggle(window)
-                            }
-                            <button
-                                className="flex items-center py-[10px] px-[20px] text-[1.1rem] font-medium text-white bg-[#386fa4] rounded-[0.75rem] no-underline transition-colors duration-300 hover:bg-blue-900">
-                                <Link to="https://www.leap-va.org/">About LEAP</Link>
-                            </button>
-                            <button
-                                className="flex items-center py-[10px] px-[20px] text-[1.1rem] font-medium text-white bg-[#386fa4] rounded-[0.75rem] no-underline transition-colors duration-300 hover:bg-blue-900">
-                                <Link to="/About" className="button">About this Dashboard</Link>
-                            </button>
-                        </div>
-                    </header>
-                    <main className="main">
-                        <Routes>
-                            <Route path="/About" element={<About/>}/>
-                            <Route path="/" element={<Dashboard showHouseholdAverages={showHouseholdAverages}
-                                                                dashboardStats={dashboardStatsData} topography={topographyData}
-                                                                countyCounts={countyCountsData}/>}/>
-                        </Routes>
-                    </main>
+                    </div>
                 </div>
-            </Fragment>
+                <Fragment>
+                    <Routes>
+                        <Route path="/About" element={<About/>}/>
+                        <Route path="/" element={<Dashboard showHouseholdAverages={showHouseholdAverages}
+                                                            dashboardStats={dashboardStatsData}
+                                                            topography={topographyData}
+                                                            countyCounts={countyCountsData}/>}/>
+                    </Routes>
+                </Fragment>
+            </div>
         </Router>
     );
 }
