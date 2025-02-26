@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import sendApiRequest from '../../util/apiRequest.js';
+import {sendMondayApiRequest} from '../../util/apiRequests.js';
 import _ from "lodash";
 
 export const fetchIntakeDataFromApi = createAsyncThunk(
@@ -18,7 +18,7 @@ export const fetchIntakeDataFromApi = createAsyncThunk(
                 "    }\n" +
                 "  }\n" +
                 "}";
-            let responseData = await sendApiRequest(query);
+            let responseData = await sendMondayApiRequest(query);
             let items = responseData.data.boards[0].items_page.items;
             intakeData = _.concat(intakeData, items);
             let cursor = responseData.data.boards[0].items_page.cursor;
@@ -33,7 +33,7 @@ export const fetchIntakeDataFromApi = createAsyncThunk(
                     "      }\n" +
                     "  }\n" +
                     "}";
-                let responseData = await sendApiRequest(query);
+                let responseData = await sendMondayApiRequest(query);
                 items = responseData?.data?.next_items_page?.items;
                 intakeData = _.concat(intakeData, items);
                 cursor = responseData?.data?.next_items_page?.cursor;
