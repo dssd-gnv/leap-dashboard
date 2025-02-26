@@ -9,11 +9,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchGeoJsonDataLocally } from "./store/topographySlice.js";
 import { fetchIntakeDataFromApi } from "./store/countyCountsSlice.js";
 import { fetchProjectSavingsDataFromApi } from "./store/dashboardStatsSlice.js";
+import { fetchSolarInstallsDataFromApi } from "./store/solarInstallsDataSlice.js";
 
 function App() {
     const { topographyLoading, topographyData } = useSelector(state => state.topography);
     const { countyCountsLoading, countyCountsData } = useSelector(state => state.countyCounts);
     const { dashboardStatsLoading, dashboardStatsData} = useSelector(state => state.dashboardStats);
+    const { solarInstallsDataLoading, solarInstallsData } = useSelector(state => state.solarInstallsData);
     const dispatch = useDispatch();
     const [showHouseholdAverages, setShowHouseholdAverages] = useState(false);
     const displayToggle = (window) => {
@@ -56,10 +58,11 @@ function App() {
         dispatch(fetchGeoJsonDataLocally());
         dispatch(fetchIntakeDataFromApi());
         dispatch(fetchProjectSavingsDataFromApi());
+        dispatch(fetchSolarInstallsDataFromApi());
         updateTopographyDataWithCountyCounts(topographyData, countyCountsData);
     }, [dispatch]);
 
-    if (topographyLoading || dashboardStatsLoading || countyCountsLoading) {
+    if (topographyLoading || dashboardStatsLoading || countyCountsLoading || solarInstallsDataLoading) {
         return (
             <Fragment>
                 <div className="flex h-screen items-center justify-center">
@@ -105,6 +108,7 @@ function App() {
                         <Route path="/" element={<Dashboard showHouseholdAverages={showHouseholdAverages}
                                                             dashboardStats={dashboardStatsData}
                                                             topography={topographyData}
+                                                            solarInstallsData={solarInstallsData}
                                                             countyCounts={countyCountsData}/>}/>
                     </Routes>
                 </Fragment>
