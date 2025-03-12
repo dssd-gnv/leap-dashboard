@@ -1,6 +1,6 @@
 export default async (req) => {
-    const apiKey = process.env.API_KEY;
-    const apiEndpoint = process.env.API_ENDPOINT;
+    const apiKey = process.env.MONDAY_API_KEY;
+    const apiEndpoint = process.env.MONDAY_API_ENDPOINT;
     const query = await req.json();
     const response = await fetch(apiEndpoint, {
         method: 'POST',

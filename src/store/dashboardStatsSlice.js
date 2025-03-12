@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import sendApiRequest from '../../util/apiRequest.js';
+import { sendMondayApiRequest } from '../../util/apiRequests.js';
 import _ from "lodash";
 
 export const fetchProjectSavingsDataFromApi = createAsyncThunk(
@@ -21,7 +21,7 @@ export const fetchProjectSavingsDataFromApi = createAsyncThunk(
                 "    }\n" +
                 "  }\n" +
                 "}";
-            const responseData = await sendApiRequest(query);
+            const responseData = await sendMondayApiRequest(query);
             return responseData?.data?.boards[0].items_page?.items;
         } catch (error) {
             console.error('Error fetching data:', error);
